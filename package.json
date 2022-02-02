@@ -1,6 +1,6 @@
 {
   "name": "health-journal",
-  "version": "1.0.0-quality.3",
+  "version": "1.0.0-quality.4",
   "author": "Suyash Kale <me@suyashkale.in>",
   "scripts": {
     "postinstall": "npm install --prefix ./packages/server && npm install --prefix ./packages/client",
