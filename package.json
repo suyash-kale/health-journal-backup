@@ -1,0 +1,28 @@
+{
+  "name": "health-journal",
+  "version": "0.0.0-development",
+  "author": "Suyash Kale <me@suyashkale.in>",
+  "scripts": {
+    "postinstall": "npm install --prefix ./packages/server && npm install --prefix ./packages/client",
+    "prepare": "husky install",
+    "start": "npm run start --prefix ./packages/server",
+    "cz": "cz",
+    "lint": "lerna run lint",
+    "prettier": "lerna run prettier",
+    "semantic-release": "semantic-release"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "devDependencies": {
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^8.0.2",
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.2.0",
+    "husky": "^7.0.4",
+    "lerna": "^4.0.0",
+    "semantic-release": "^18.0.1"
+  }
+}

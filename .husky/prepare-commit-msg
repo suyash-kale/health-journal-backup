@@ -1,0 +1,10 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+commit_regex='(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)'
+error_msg="Aborting commit. Your commit message should start with either one of the following [feat,fix,docs,style,refactor,perf,test,build,ci,chore,revert]:"
+
+if ! grep -iqE "$commit_regex" "$1"; then
+    echo "$error_msg" >&2
+    exit 1
+fi

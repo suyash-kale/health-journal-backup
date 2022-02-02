@@ -1,0 +1,11 @@
+export enum eActions {
+  // busy
+  BUSY_ADD = 'BUSY_ADD',
+  BUSY_REMOVE = 'BUSY_REMOVE',
+  // notification
+  NOTIFICATION_ADD = 'NOTIFICATION_ADD',
+  NOTIFICATION_REMOVE = 'NOTIFICATION_REMOVE',
+  // user
+  USER_SIGN_IN = 'USER_SIGN_IN',
+  USER_SIGN_OUT = 'USER_SIGN_OUT',
+}
