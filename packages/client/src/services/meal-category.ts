@@ -4,15 +4,17 @@ import {
   MealCategoryGetResponse,
   MealCategoryGetRequest,
   MealCategoryDeleteRequest,
+  MealCategoryPutRequest,
+  MealCategoryPutResponse,
 } from '@health-journal/server';
 import service from 'services/index';
 
 export const create = (
-  data: MealCategoryPostRequest
-): Promise<MealCategoryPostResponse> =>
+  data: MealCategoryPostRequest | MealCategoryPutRequest
+): Promise<MealCategoryPostResponse | MealCategoryPutResponse> =>
   service({
-    url: '/meal/category',
-    method: 'POST',
+    url: `/meal/category`,
+    method: (data as MealCategoryPutRequest).IdMealCategory ? 'PUT' : 'POST',
     data,
   });
 

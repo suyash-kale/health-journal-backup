@@ -9,14 +9,17 @@ import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { MealCategoryPostRequest } from '@health-journal/server';
+import {
+  MealCategoryPostRequest,
+  MealCategoryPutRequest,
+} from '@health-journal/server';
 import { create as createService } from 'services/meal-category';
 import useForm from 'hooks/useForm';
 import TimePicker from 'components/common/time-picker';
 import Loading from 'components/common/loading';
 
 export interface CreateProps {
-  row?: MealCategoryPostRequest;
+  row?: MealCategoryPostRequest | MealCategoryPutRequest;
   open: boolean;
   onClose: () => void;
   onDone: () => void;
@@ -25,9 +28,11 @@ export interface CreateProps {
 const Create: FC<CreateProps> = ({ open, row, onClose, onDone }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [form, setValue, errors, validate, setErrors, reset] = useForm(
-    MealCategoryPostRequest
-  );
+  const [form, setValue, errors, validate, setErrors, reset] = useForm<
+    MealCategoryPostRequest | MealCategoryPutRequest
+  >(MealCategoryPostRequest);
+
+  const [isUpdate, setIsUpdate] = useState<boolean>(false);
 
   const onSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
@@ -48,6 +53,7 @@ const Create: FC<CreateProps> = ({ open, row, onClose, onDone }) => {
 
   useEffect(() => {
     if (open) {
+      setIsUpdate(!!(row as MealCategoryPutRequest)?.IdMealCategory);
       reset(row);
     }
   }, [open, row, reset]);
@@ -56,7 +62,7 @@ const Create: FC<CreateProps> = ({ open, row, onClose, onDone }) => {
     <Dialog open={open} maxWidth='sm' fullWidth>
       <Loading loading={loading}>
         <DialogTitle>
-          Create meal category
+          {isUpdate ? 'Update' : 'Create'} meal category
           <IconButton
             onClick={onClose}
             sx={{
@@ -123,7 +129,7 @@ const Create: FC<CreateProps> = ({ open, row, onClose, onDone }) => {
                   Cancel
                 </Button>
                 <Button variant='contained' type='submit' endIcon={<AddIcon />}>
-                  Create
+                  {isUpdate ? 'Update' : 'Create'}
                 </Button>
               </Grid>
             </Grid>

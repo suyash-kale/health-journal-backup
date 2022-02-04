@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 
 import { TITLE_MIN_LENGTH, TITLE_MAX_LENGTH } from '../../../const/meal-type';
-import { DateType } from '../../table';
+import { DateType, IdType } from '../../table';
 import { MealCategoryType } from '../../entity';
 import {
   ResponseEntityType,
@@ -40,3 +40,10 @@ export class MealCategoryPostRequest {
 }
 
 export type MealCategoryPostResponse = ResponseEntityType<MealCategoryType>;
+
+export class MealCategoryPutRequest extends MealCategoryPostRequest {
+  @IsNotEmpty()
+  IdMealCategory: IdType;
+}
+
+export type MealCategoryPutResponse = ResponseEntityType<MealCategoryType>;
