@@ -36,10 +36,15 @@ const Search: FC<SearchProps> = ({
     [text]
   );
 
-  const onCancel = useCallback(() => {
-    setText('');
-    setSearch('');
-  }, []);
+  const onIconClick = useCallback(() => {
+    if (search) {
+      setText('');
+      setSearch('');
+    } else if (text !== search) {
+      setText(text);
+      setSearch(text);
+    }
+  }, [text, search]);
 
   useEffect(() => {
     onSearch(search);
@@ -49,11 +54,7 @@ const Search: FC<SearchProps> = ({
     setSearch(debounce);
   }, [debounce]);
 
-  const SearchIconRender = search ? (
-    <CancelIcon onClick={onCancel} />
-  ) : (
-    <SearchIcon />
-  );
+  const SearchIconRender = search ? <CancelIcon /> : <SearchIcon />;
 
   return (
     <Paper
@@ -78,7 +79,7 @@ const Search: FC<SearchProps> = ({
         autoComplete='off'
         {...props}
       />
-      <IconButton type='submit'>
+      <IconButton type='submit' onClick={onIconClick}>
         {loading ? <CircularProgress size={24} /> : SearchIconRender}
       </IconButton>
     </Paper>

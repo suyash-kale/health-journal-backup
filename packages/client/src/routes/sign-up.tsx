@@ -33,12 +33,12 @@ const SignUp: FC = () => {
       validate()
         .then(() => {
           signUpService(form)
+            .finally(() => setLoading(false))
             .then(({ entity }) => {
               dispatch(signInAction(entity));
               navigate('/meal/category');
             })
-            .catch(err => setErrors(err.response.data.errors))
-            .finally(() => setLoading(false));
+            .catch(err => setErrors(err.response.data.errors));
         })
         .catch(() => '')
         .finally(() => setLoading(false));
@@ -60,8 +60,8 @@ const SignUp: FC = () => {
             Sign up
           </Typography>
           <form onSubmit={onSubmit} noValidate>
-            <Grid container sm={12}>
-              <Grid md={6} sm={12} sx={{ pr: 1 }}>
+            <Grid container>
+              <Grid item md={6} sm={12} sx={{ pr: 1 }}>
                 <TextField
                   value={form.first}
                   onChange={e => setValue('first', e.target.value)}
@@ -77,7 +77,7 @@ const SignUp: FC = () => {
                   autoFocus
                 />
               </Grid>
-              <Grid md={6} sm={12} sx={{ pl: 1 }}>
+              <Grid item md={6} sm={12} sx={{ pl: 1 }}>
                 <TextField
                   value={form.last}
                   onChange={e => setValue('last', e.target.value)}
@@ -92,7 +92,7 @@ const SignUp: FC = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid sm={12}>
+              <Grid item sm={12}>
                 <TextField
                   value={form.mobile}
                   onChange={e => setValue('mobile', e.target.value)}
@@ -107,7 +107,7 @@ const SignUp: FC = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid sm={12}>
+              <Grid item sm={12}>
                 <Password
                   value={form.password}
                   onChange={e => setValue('password', e.target.value)}
@@ -126,7 +126,7 @@ const SignUp: FC = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid sm={12} textAlign='right'>
+              <Grid item sm={12} textAlign='right'>
                 <Button
                   type='submit'
                   variant='contained'
@@ -142,7 +142,7 @@ const SignUp: FC = () => {
           </form>
         </Paper>
       </Loading>
-      <Grid container sm={12} justifyContent='center'>
+      <Grid container justifyContent='center'>
         <Button variant='text' onClick={() => navigate('/sign-in')}>
           Sign in
         </Button>

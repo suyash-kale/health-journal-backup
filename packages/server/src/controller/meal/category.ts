@@ -7,6 +7,7 @@ import {
   Get,
   QueryParams,
   Delete,
+  Put,
 } from 'routing-controllers';
 
 import {
@@ -15,14 +16,16 @@ import {
   MealCategoryGetResponse,
   MealCategoryGetRequest,
   MealCategoryDeleteRequest,
+  MealCategoryPutRequest,
+  MealCategoryPutResponse,
 } from '../../types/controller/meal/category';
 import { CurrentUserType } from '../../types/entity';
 import { ResponseType } from '../../types/common';
-import { create, list, remove } from '../../service/meal-category';
+import { create, list, remove, update } from '../../service/meal-category';
 
 @JsonController('/meal/category')
 export class UsersController {
-  // Delete 'MealCategory' for the user.
+  // Delete 'MealCategory' for the User.
   @Delete()
   @Authorized()
   remove(
@@ -37,7 +40,7 @@ export class UsersController {
     );
   }
 
-  // Get list of 'MealCategory' of user.
+  // Get list of 'MealCategory' of the User.
   @Get()
   @Authorized()
   list(
@@ -52,7 +55,26 @@ export class UsersController {
     });
   }
 
-  // Create new 'MealCategory'.
+  // Update a 'MealCategory' for the User.
+  @Put('/')
+  @Authorized()
+  update(
+    @CurrentUser({ required: true }) user: CurrentUserType,
+    @Body() data: MealCategoryPutRequest,
+  ): Promise<MealCategoryPutResponse> {
+    return new Promise((resolve, reject) => {
+      update(user, data).then(
+        (mealCategory) =>
+          resolve({
+            entity: mealCategory,
+            message: 'Meal category updated successfully.',
+          }),
+        reject,
+      );
+    });
+  }
+
+  // Create new 'MealCategory' for the User.
   @Post('/')
   @Authorized()
   create(

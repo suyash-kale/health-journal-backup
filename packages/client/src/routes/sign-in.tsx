@@ -33,12 +33,12 @@ const SignIn: FC = () => {
       validate()
         .then(() => {
           signInService(form)
+            .finally(() => setLoading(false))
             .then(({ entity }) => {
               dispatch(signInAction(entity));
               navigate('/');
             })
-            .catch(err => setErrors(err.response.data.errors))
-            .finally(() => setLoading(false));
+            .catch(err => setErrors(err.response.data.errors));
         })
         .catch(() => '')
         .finally(() => setLoading(false));
@@ -60,8 +60,8 @@ const SignIn: FC = () => {
             Sign in
           </Typography>
           <form onSubmit={onSubmit} noValidate>
-            <Grid container sm={12}>
-              <Grid sm={12}>
+            <Grid container>
+              <Grid item sm={12}>
                 <TextField
                   value={form.mobile}
                   onChange={e => setValue('mobile', e.target.value)}
@@ -78,7 +78,7 @@ const SignIn: FC = () => {
                   autoFocus
                 />
               </Grid>
-              <Grid sm={12}>
+              <Grid item sm={12}>
                 <Password
                   value={form.password}
                   onChange={e => setValue('password', e.target.value)}
@@ -97,7 +97,7 @@ const SignIn: FC = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid sm={12} textAlign='right'>
+              <Grid item sm={12} textAlign='right'>
                 <Button
                   type='submit'
                   variant='contained'
@@ -113,7 +113,7 @@ const SignIn: FC = () => {
           </form>
         </Paper>
       </Loading>
-      <Grid container sm={12} justifyContent='center'>
+      <Grid container justifyContent='center'>
         <Button variant='text' onClick={() => navigate('/sign-up')}>
           Sign up
         </Button>

@@ -87,3 +87,28 @@ export const list = (
       `SELECT IdMealCategory, title, fromTime, tillTime FROM MealCategory ${where} ORDER BY fromTime ASC`,
     ).then(([mealCategory]) => resolve(mealCategory), reject);
   });
+
+// Update a 'MealCategory' for a User.
+export const update = (
+  user: CurrentUserType,
+  data: Pick<
+    MealCategoryTable,
+    'IdMealCategory' | 'title' | 'fromTime' | 'tillTime'
+  >,
+): Promise<MealCategoryType> =>
+  new Promise((resolve, reject) => {
+    const { IdUser } = user;
+    const { IdMealCategory, title, fromTime, tillTime } = data;
+    const mealCategory: MealCategoryTable = {
+      ...new MealCategoryTable(),
+      IdMealCategory,
+      IdUser,
+      title,
+      fromTime: fromTime ? new Date(fromTime) : null,
+      tillTime: tillTime ? new Date(tillTime) : null,
+    };
+    push<Omit<MealCategoryTable, 'IdMealCategory'>>(
+      `UPDATE MealCategory SET ? WHERE IdMealCategory=${IdMealCategory} AND IdUser=${IdUser}`,
+      mealCategory,
+    ).then(() => resolve(mealCategory), reject);
+  });
