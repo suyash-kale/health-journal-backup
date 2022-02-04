@@ -1,6 +1,6 @@
 import { Action } from 'routing-controllers';
 
-import { UserTableType } from '../types/table';
+import { UserTable } from '../types/table';
 import { verify } from '../utility/jwt';
 
 export const authorizationChecker = (action: Action): Promise<boolean> =>
@@ -14,7 +14,7 @@ export const authorizationChecker = (action: Action): Promise<boolean> =>
 export const currentUserChecker = (action: Action) =>
   new Promise((resolve, reject) => {
     const authorization = action.request?.headers?.authorization;
-    verify<Pick<UserTableType, 'IdUser'>>(authorization).then(
+    verify<Pick<UserTable, 'IdUser'>>(authorization).then(
       (o) => resolve(o),
       reject,
     );

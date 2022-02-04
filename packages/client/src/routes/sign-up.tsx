@@ -35,7 +35,7 @@ const SignUp: FC = () => {
           signUpService(form)
             .then(({ entity }) => {
               dispatch(signInAction(entity));
-              navigate('/');
+              navigate('/meal/category');
             })
             .catch(err => setErrors(err.response.data.errors))
             .finally(() => setLoading(false));

@@ -8,20 +8,23 @@ import {
 
 import { TITLE_MIN_LENGTH, TITLE_MAX_LENGTH } from '../../../const/meal-type';
 import { DateType } from '../../table';
-import { MealTypeType } from '../../entity';
+import { MealCategoryType } from '../../entity';
 import {
   ResponseEntityType,
   ResponseEntitiesType,
   RequestEntitiesType,
 } from '../../common';
 
-export type MealTypeDeleteRequest = Pick<MealTypeType, 'IdMealType'>;
+export type MealCategoryDeleteRequest = Pick<
+  MealCategoryType,
+  'IdMealCategory'
+>;
 
-export type MealTypeGetRequest = RequestEntitiesType<MealTypeType>;
+export type MealCategoryGetRequest = RequestEntitiesType<MealCategoryType>;
 
-export type MealTypeGetResponse = ResponseEntitiesType<MealTypeType>;
+export type MealCategoryGetResponse = ResponseEntitiesType<MealCategoryType>;
 
-export class MealTypePostRequest {
+export class MealCategoryPostRequest {
   @IsNotEmpty()
   @IsString()
   @Length(TITLE_MIN_LENGTH, TITLE_MAX_LENGTH)
@@ -36,4 +39,4 @@ export class MealTypePostRequest {
   tillTime: null | DateType = null;
 }
 
-export type MealTypePostResponse = ResponseEntityType<MealTypeType>;
+export type MealCategoryPostResponse = ResponseEntityType<MealCategoryType>;

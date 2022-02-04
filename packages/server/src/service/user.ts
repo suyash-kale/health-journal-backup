@@ -1,4 +1,4 @@
-import { IdType, UserTableType, UserDetailTableType } from '../types/table';
+import { IdType, UserTable, UserDetailTable } from '../types/table';
 import { UserProfileType } from '../types/entity';
 import { ResponseException } from '../types/http-error';
 import { pull, push, escape } from '../utility/mysql';
@@ -7,9 +7,9 @@ import { compare, hash } from '../utility/bcrypt';
 // Get 'IdUser' from 'mobile'.
 export const IdByMobile = ({
   mobile,
-}: Pick<UserTableType, 'mobile'>): Promise<IdType> =>
+}: Pick<UserTable, 'mobile'>): Promise<IdType> =>
   new Promise((resolve, reject) => {
-    pull<UserTableType>(
+    pull<UserTable>(
       `SELECT IdUser from User WHERE mobile=${escape(mobile)}`,
     ).then(([, user]) => {
       if (user) {
@@ -27,8 +27,8 @@ export const IdByMobile = ({
 
 // Create new User.
 export const create = (
-  data: Pick<UserTableType, 'mobile' | 'password'> &
-    Pick<UserDetailTableType, 'first' | 'last'>,
+  data: Pick<UserTable, 'mobile' | 'password'> &
+    Pick<UserDetailTable, 'first' | 'last'>,
 ): Promise<number> => {
   return new Promise((resolve, reject) => {
     const { mobile, first, last } = data;
@@ -44,21 +44,19 @@ export const create = (
         // 'mobile' not registered.
         hash(data.password).then((password) => {
           // inserting into 'User' table.
-          push<Omit<UserTableType, 'IdUser'>>(`INSERT INTO User SET ?`, {
+          push<Omit<UserTable, 'IdUser'>>(`INSERT INTO User SET ?`, {
+            ...new UserTable(),
             mobile,
             password,
-            createdAt: new Date(),
-            updatedAt: new Date(),
           }).then(([IdUser]) => {
             // inserting into 'UserDetail' table.
-            push<Omit<UserDetailTableType, 'IdUserDetail'>>(
+            push<Omit<UserDetailTable, 'IdUserDetail'>>(
               `INSERT INTO UserDetail SET ?`,
               {
+                ...new UserDetailTable(),
                 IdUser,
                 first,
                 last,
-                createdAt: new Date(),
-                updatedAt: new Date(),
               },
             ).then(() => resolve(IdUser), reject);
           }, reject);
@@ -71,7 +69,7 @@ export const create = (
 // Get 'UserProfile' by 'IdUser';
 export const profileById = ({
   IdUser,
-}: Pick<UserTableType, 'IdUser'>): Promise<UserProfileType> => {
+}: Pick<UserTable, 'IdUser'>): Promise<UserProfileType> => {
   return new Promise((resolve, reject) => {
     pull<UserProfileType>(
       `SELECT User.mobile, UserDetail.first, UserDetail.last FROM User INNER JOIN UserDetail ON User.IdUser=UserDetail.IdUser WHERE User.IdUser=${escape(
@@ -91,9 +89,9 @@ export const profileById = ({
 export const authByCredentials = ({
   mobile,
   password,
-}: Pick<UserTableType, 'mobile' | 'password'>): Promise<IdType> => {
+}: Pick<UserTable, 'mobile' | 'password'>): Promise<IdType> => {
   return new Promise((resolve, reject) => {
-    pull<Pick<UserTableType, 'IdUser' | 'password'>>(
+    pull<Pick<UserTable, 'IdUser' | 'password'>>(
       `SELECT IdUser, password FROM User WHERE mobile=${escape(mobile)}`,
     ).then(([, user]) => {
       if (user && user.IdUser) {

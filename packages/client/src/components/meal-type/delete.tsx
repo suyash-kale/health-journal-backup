@@ -8,12 +8,12 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { MealTypeType } from '@health-journal/server';
-import { remove as deleteService } from 'services/meal-type';
+import { MealCategoryType } from '@health-journal/server';
+import { remove as deleteService } from 'services/meal-category';
 import Loading from 'components/common/loading';
 
 export interface DeleteProps {
-  row?: MealTypeType;
+  row?: MealCategoryType;
   onClose: () => void;
   onDone: () => void;
 }
@@ -25,7 +25,7 @@ export const Delete: FC<DeleteProps> = ({ row, onClose, onDone }) => {
     if (row) {
       setLoading(true);
       deleteService({
-        IdMealType: row.IdMealType,
+        IdMealCategory: row.IdMealCategory,
       })
         .then(onDone)
         .finally(() => setLoading(false));
@@ -36,7 +36,7 @@ export const Delete: FC<DeleteProps> = ({ row, onClose, onDone }) => {
     <Dialog open={!!row} maxWidth='sm' fullWidth>
       <Loading loading={loading}>
         <DialogTitle>
-          Delete meal type
+          Delete meal category
           <IconButton
             onClick={onClose}
             sx={{

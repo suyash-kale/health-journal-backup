@@ -1,35 +1,35 @@
-export type IdType = number;
-export type DateType = string | Date;
+export type IdType = null | number;
+export type DateType = null | string | Date;
 
-export interface UserTableType {
+export class UserTable {
   IdUser: IdType;
   mobile: string;
   password: string;
-  createdAt: DateType;
-  updatedAt: DateType;
+  createdAt: DateType = new Date();
+  updatedAt: DateType = new Date();
 }
 
-export interface UserDetailTableType {
-  IdUserDetail: IdType;
+export class UserDetailTable {
+  IdUserDetail: IdType = null;
   IdUser: IdType;
   first: string;
-  last?: string;
-  createdAt: DateType;
-  updatedAt: DateType;
+  last?: null | string = null;
+  createdAt: DateType = new Date();
+  updatedAt: DateType = new Date();
 }
 
-export interface MealTypeTableType {
-  IdMealType: IdType;
+export class MealCategoryTable {
+  IdMealCategory: IdType = null;
   IdUser: IdType;
   title: string;
-  fromTime: null | DateType;
-  tillTime: null | DateType;
-  createdAt: DateType;
-  updatedAt: DateType;
+  fromTime: null | DateType = null;
+  tillTime: null | DateType = null;
+  createdAt: DateType = new Date();
+  updatedAt: DateType = new Date();
 }
 
-export interface MealTypeMasterTableType {
-  IdMealTypeMaster: IdType;
+export class MealCategoryMasterTable {
+  IdMealCategoryMaster: IdType = null;
   title: string;
-  createdAt: DateType;
+  createdAt: DateType = new Date();
 }
