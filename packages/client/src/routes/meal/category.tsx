@@ -17,8 +17,8 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/lab/LoadingButton';
 
-import { MealTypeType } from '@health-journal/server';
-import { list as listService } from 'services/meal-type';
+import { MealCategoryType } from '@health-journal/server';
+import { list as listService } from 'services/meal-category';
 import { localTime } from 'utility/date';
 import Search from 'components/common/search';
 import IconMerge from 'components/common/icon-merge';
@@ -26,20 +26,20 @@ import Loading from 'components/common/loading';
 import Create from 'components/meal-type/create';
 import Delete from 'components/meal-type/delete';
 
-const Index: FC = () => {
+const Category: FC = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   const [loading, setLoading] = useState<boolean>(false);
 
   const [search, setSearch] = useState<string>('');
 
-  const [row, setRow] = useState<undefined | MealTypeType>(undefined);
+  const [row, setRow] = useState<undefined | MealCategoryType>(undefined);
 
-  const [deleteRow, setDeleteRow] = useState<undefined | MealTypeType>(
+  const [deleteRow, setDeleteRow] = useState<undefined | MealCategoryType>(
     undefined
   );
 
-  const [rows, setRows] = useState<Array<MealTypeType>>([]);
+  const [rows, setRows] = useState<Array<MealCategoryType>>([]);
 
   const onClose = useCallback(() => {
     setOpen(false);
@@ -59,7 +59,7 @@ const Index: FC = () => {
     loadRows();
   }, [onClose, loadRows]);
 
-  const onEdit = useCallback((r: MealTypeType) => {
+  const onEdit = useCallback((r: MealCategoryType) => {
     setRow(r);
     setOpen(true);
   }, []);
@@ -87,7 +87,7 @@ const Index: FC = () => {
             },
           }}
         />
-        Meal type
+        Meal category
       </Typography>
 
       <Create open={open} row={row} onClose={onClose} onDone={onDone} />
@@ -127,10 +127,10 @@ const Index: FC = () => {
             )}
             {!loading && !rows.length && <ListItem>No data ..</ListItem>}
             {rows.map((r, i) => (
-              <Fragment key={`fragment-${r.IdMealType}`}>
-                {!!i && <Divider key={`divider-${r.IdMealType}`} />}
+              <Fragment key={`fragment-${r.IdMealCategory}`}>
+                {!!i && <Divider key={`divider-${r.IdMealCategory}`} />}
                 <ListItem
-                  key={`list-item-${r.IdMealType}`}
+                  key={`list-item-${r.IdMealCategory}`}
                   secondaryAction={
                     <>
                       <IconButton onClick={() => onEdit(r)}>
@@ -174,4 +174,4 @@ const Index: FC = () => {
   );
 };
 
-export default Index;
+export default Category;

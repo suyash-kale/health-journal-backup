@@ -209,14 +209,14 @@ const Container: FC<ContainerProps> = ({
             </ListItem>
             <Divider />
             <ListItem
-              onClick={() => navigate('/meal/type')}
-              selected={pathname === '/meal/type'}
+              onClick={() => navigate('/meal/category')}
+              selected={pathname === '/meal/category'}
               button
             >
               <ListItemIcon>
                 <IconMerge Primary={RestaurantIcon} Secondary={SettingsIcon} />
               </ListItemIcon>
-              <ListItemText primary='Meal type' />
+              <ListItemText primary='Meal category' />
             </ListItem>
           </List>
         </Drawer>

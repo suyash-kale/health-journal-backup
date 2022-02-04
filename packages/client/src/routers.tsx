@@ -5,7 +5,7 @@ import Container from 'components/container';
 import SignUp from 'routes/sign-up';
 import SignIn from 'routes/sign-in';
 import Meal from 'routes/meal/index';
-import MealType from 'routes/meal/type';
+import MealCategory from 'routes/meal/category';
 
 const Routers: FC = () => {
   return (
@@ -30,9 +30,13 @@ const Routers: FC = () => {
           }
         />
         <Route
-          path='/meal/type'
+          path='/meal/category'
           element={
-            <Container title='Meal type' element={<MealType />} authorization />
+            <Container
+              title='Meal category'
+              element={<MealCategory />}
+              authorization
+            />
           }
         />
         <Route

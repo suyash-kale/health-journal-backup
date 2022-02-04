@@ -9,14 +9,14 @@ import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { MealTypePostRequest } from '@health-journal/server';
-import { create as createService } from 'services/meal-type';
+import { MealCategoryPostRequest } from '@health-journal/server';
+import { create as createService } from 'services/meal-category';
 import useForm from 'hooks/useForm';
 import TimePicker from 'components/common/time-picker';
 import Loading from 'components/common/loading';
 
 export interface CreateProps {
-  row?: MealTypePostRequest;
+  row?: MealCategoryPostRequest;
   open: boolean;
   onClose: () => void;
   onDone: () => void;
@@ -25,8 +25,9 @@ export interface CreateProps {
 const Create: FC<CreateProps> = ({ open, row, onClose, onDone }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [form, setValue, errors, validate, setErrors, reset] =
-    useForm(MealTypePostRequest);
+  const [form, setValue, errors, validate, setErrors, reset] = useForm(
+    MealCategoryPostRequest
+  );
 
   const onSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
@@ -55,7 +56,7 @@ const Create: FC<CreateProps> = ({ open, row, onClose, onDone }) => {
     <Dialog open={open} maxWidth='sm' fullWidth>
       <Loading loading={loading}>
         <DialogTitle>
-          Create meal type
+          Create meal category
           <IconButton
             onClick={onClose}
             sx={{
