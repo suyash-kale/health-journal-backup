@@ -33,3 +33,46 @@ export class MealCategoryMasterTable {
   title: string;
   createdAt: DateType = new Date();
 }
+
+export class MealTable {
+  IdMeal: IdType = null;
+  IdUser: IdType;
+  IdMealCategory: IdType;
+  dateTime: DateType;
+  createdAt: DateType = new Date();
+  updatedAt: DateType = new Date();
+}
+
+export class MealDishTable {
+  IdMealDish: IdType = null;
+  IdMeal: IdType;
+  IdDish: IdType;
+  createdAt: DateType = new Date();
+}
+
+export class DishTable {
+  IdDish: IdType = null;
+  IdUser: IdType;
+  title: string;
+  createdAt: DateType = new Date();
+  updatedAt: DateType = new Date();
+}
+
+export class DishMasterTable {
+  IdDishMaster: IdType = null;
+  title: string;
+  createdAt: DateType = new Date();
+}
+
+export class MealDishIngredient {
+  IdMealDishIngredient: IdType = null;
+  IdMealDish: IdType;
+  IdIngredientMaster: IdType;
+  createdAt: DateType = new Date();
+}
+
+export class IngredientMaster {
+  IdIngredientMaster: IdType = null;
+  title: string;
+  createdAt: DateType = new Date();
+}
