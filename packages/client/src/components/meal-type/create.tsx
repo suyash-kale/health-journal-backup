@@ -45,8 +45,7 @@ const Create: FC<CreateProps> = ({ open, row, onClose, onDone }) => {
             .catch(err => setErrors(err.response.data.errors))
             .finally(() => setLoading(false));
         })
-        .catch(() => '')
-        .finally(() => setLoading(false));
+        .catch(() => setLoading(false));
     },
     [validate, form, setErrors, onDone]
   );

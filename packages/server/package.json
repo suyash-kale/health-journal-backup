@@ -4,7 +4,7 @@
   "types": "./dist/export.d.ts",
   "scripts": {
     "postinstall": "npm run build",
-    "start": "pm2 start ./dist/index.js",
+    "start": "pm2-runtime start ecosystem.config.js --env production",
     "pm2": "pm2",
     "dev": "nodemon -r dotenv/config ./src/index.ts dotenv_config_path=env.conf",
     "build": "tsc --project tsconfig.json",
