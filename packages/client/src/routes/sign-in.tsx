@@ -40,8 +40,7 @@ const SignIn: FC = () => {
             })
             .catch(err => setErrors(err.response.data.errors));
         })
-        .catch(() => '')
-        .finally(() => setLoading(false));
+        .catch(() => setLoading(false));
     },
     [validate, form, dispatch, navigate, setErrors]
   );
