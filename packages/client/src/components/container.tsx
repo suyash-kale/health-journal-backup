@@ -27,7 +27,11 @@ import { Reducers } from 'store/types';
 import { UserStateType } from 'store/user/types';
 import { APPLICATION_NAME } from 'const/app';
 import { ROUTE_PUBLIC_DEFAULT, ROUTE_PRIVATE_DEFAULT } from 'const/url';
-import { signOut as signOutAction } from 'store/user/actions';
+import {
+  signOut as signOutAction,
+  signIn as signInAction,
+} from 'store/user/actions';
+import { profile as profileService } from 'services/user';
 import IconMerge from 'components/common/icon-merge';
 
 export type ContainerProps = {
@@ -125,15 +129,24 @@ const Container: FC<ContainerProps> = ({
   }, [title]);
 
   useEffect(() => {
+    const token = localStorage.getItem('authorization');
+    // user remembered.
+    if (!user && token) {
+      profileService(token)
+        .then(({ entity }) =>
+          dispatch(signInAction({ ...entity, authorization: token }))
+        )
+        .catch(() => localStorage.removeItem('authorization'));
+    }
     // user not logged in & authorization is true.
-    if (!user && authorization) {
+    else if (!user && authorization) {
       navigate(ROUTE_PUBLIC_DEFAULT);
     }
     // user logged in & publicOnly is true.
-    if (user && !authorization && publicOnly) {
+    else if (user && !authorization && publicOnly) {
       navigate(ROUTE_PRIVATE_DEFAULT);
     }
-  }, [user, authorization, publicOnly, navigate]);
+  }, [user, authorization, publicOnly, navigate, dispatch]);
 
   return (
     <Box sx={{ display: 'flex' }}>
