@@ -112,3 +112,29 @@ export const update = (
       mealCategory,
     ).then(() => resolve(mealCategory), reject);
   });
+
+// Get MealCategory detail by Id.
+export const detailById = (
+  user: CurrentUserType,
+  data: Pick<MealCategoryTable, 'IdMealCategory'>,
+): Promise<MealCategoryType> =>
+  new Promise((resolve, reject) => {
+    const { IdUser } = user;
+    const { IdMealCategory } = data;
+    pull<
+      Pick<
+        MealCategoryTable,
+        'IdMealCategory' | 'title' | 'fromTime' | 'tillTime'
+      >
+    >(
+      `SELECT IdMealCategory, title, fromTime, tillTime FROM MealCategory WHERE IdUser=${escape(
+        IdUser,
+      )} AND IdMealCategory=${escape(IdMealCategory)}`,
+    ).then(([, mealCategory]) => {
+      if (mealCategory) {
+        resolve(mealCategory);
+      } else {
+        reject(new ResponseException('warning', 'Meal category not found.'));
+      }
+    }, reject);
+  });

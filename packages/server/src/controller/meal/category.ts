@@ -24,7 +24,7 @@ import { ResponseType } from '../../types/common';
 import { create, list, remove, update } from '../../service/meal-category';
 
 @JsonController('/meal/category')
-export class UsersController {
+export class MealCategoryController {
   // Delete 'MealCategory' for the User.
   @Delete()
   @Authorized()

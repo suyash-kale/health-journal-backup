@@ -1,4 +1,9 @@
-import { UserTable, UserDetailTable, MealCategoryTable } from './table';
+import {
+  UserTable,
+  UserDetailTable,
+  MealCategoryTable,
+  MealTable,
+} from './table';
 
 export type CurrentUserType = Pick<UserTable, 'IdUser'>;
 
@@ -11,3 +16,7 @@ export type MealCategoryType = Pick<
   MealCategoryTable,
   'IdMealCategory' | 'title' | 'fromTime' | 'tillTime'
 >;
+
+export type MealType = Pick<MealTable, 'IdMeal' | 'dateTime'> & {
+  category: MealCategoryType;
+};
