@@ -3,6 +3,7 @@ import {
   UserPostResponse,
   UserAuthPostRequest,
   UserAuthPostResponse,
+  UserGetResponse,
 } from '@health-journal/server';
 import service from 'services/index';
 
@@ -20,4 +21,13 @@ export const signIn = (
     url: '/user/auth',
     method: 'POST',
     data,
+  });
+
+export const profile = (authorization = ''): Promise<UserGetResponse> =>
+  service({
+    url: '/user',
+    method: 'GET',
+    headers: {
+      authorization,
+    },
   });

@@ -6,6 +6,8 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/lab/LoadingButton';
 import Typography from '@mui/material/Typography';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 import LoginIcon from '@mui/icons-material/Login';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
@@ -23,6 +25,8 @@ const SignIn: FC = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
 
+  const [remember, setRemember] = useState<boolean>(true);
+
   const [form, setValue, errors, validate, setErrors] =
     useForm(UserAuthPostRequest);
 
@@ -35,6 +39,11 @@ const SignIn: FC = () => {
           signInService(form)
             .finally(() => setLoading(false))
             .then(({ entity }) => {
+              if (remember) {
+                localStorage.setItem('authorization', entity.authorization);
+              } else {
+                localStorage.removeItem('authorization');
+              }
               dispatch(signInAction(entity));
               navigate('/');
             })
@@ -42,7 +51,7 @@ const SignIn: FC = () => {
         })
         .catch(() => setLoading(false));
     },
-    [validate, form, dispatch, navigate, setErrors]
+    [validate, form, dispatch, navigate, setErrors, remember]
   );
 
   return (
@@ -97,6 +106,15 @@ const SignIn: FC = () => {
                 />
               </Grid>
               <Grid item sm={12} textAlign='right'>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={remember}
+                      onChange={e => setRemember(e.target.checked)}
+                    />
+                  }
+                  label='Remember me'
+                />
                 <Button
                   type='submit'
                   variant='contained'

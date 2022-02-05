@@ -35,6 +35,7 @@ const SignUp: FC = () => {
           signUpService(form)
             .finally(() => setLoading(false))
             .then(({ entity }) => {
+              localStorage.setItem('authorization', entity.authorization);
               dispatch(signInAction(entity));
               navigate('/meal/category');
             })

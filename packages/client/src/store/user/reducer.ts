@@ -12,6 +12,7 @@ const reducer = (
       return { ...(action as UserActionSignInType).user };
     }
     case eActions.USER_SIGN_OUT: {
+      localStorage.removeItem('authorization');
       return null;
     }
     default: {
