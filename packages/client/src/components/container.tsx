@@ -238,7 +238,8 @@ const Container: FC<ContainerProps> = ({
         <DrawerHeader />
         <MaterialContainer maxWidth={false}>
           <Grid container spacing={2} justifyContent='center'>
-            {element}
+            {authorization && user && element}
+            {!authorization && element}
           </Grid>
         </MaterialContainer>
       </Box>
