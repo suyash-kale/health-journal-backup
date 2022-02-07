@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useCallback, useEffect, useState } from 'react';
+import React, { FC, Fragment, useCallback, useMemo, useState } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -18,8 +18,8 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/lab/LoadingButton';
 
 import { MealCategoryType } from '@health-journal/server';
-import { list as listService } from 'services/meal-category';
 import { localTime } from 'utility/date';
+import useMealCategories from 'hooks/useMealCategories';
 import Search from 'components/common/search';
 import IconMerge from 'components/common/icon-merge';
 import Loading from 'components/common/loading';
@@ -29,8 +29,6 @@ import Delete from 'components/meal-type/delete';
 const Category: FC = () => {
   const [open, setOpen] = useState<boolean>(false);
 
-  const [loading, setLoading] = useState<boolean>(false);
-
   const [search, setSearch] = useState<string>('');
 
   const [row, setRow] = useState<undefined | MealCategoryType>(undefined);
@@ -39,7 +37,15 @@ const Category: FC = () => {
     undefined
   );
 
-  const [rows, setRows] = useState<Array<MealCategoryType>>([]);
+  const { mealCategories, loading, load } = useMealCategories();
+
+  const rows = useMemo(
+    () =>
+      mealCategories.filter(m =>
+        m.title.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+      ),
+    [mealCategories, search]
+  );
 
   const onClose = useCallback(() => {
     setOpen(false);
@@ -47,26 +53,15 @@ const Category: FC = () => {
     setDeleteRow(undefined);
   }, []);
 
-  const loadRows = useCallback(() => {
-    setLoading(true);
-    listService({ search })
-      .then(({ entities }) => setRows(entities))
-      .finally(() => setLoading(false));
-  }, [search]);
-
   const onDone = useCallback(() => {
     onClose();
-    loadRows();
-  }, [onClose, loadRows]);
+    load();
+  }, [onClose, load]);
 
   const onEdit = useCallback((r: MealCategoryType) => {
     setRow(r);
     setOpen(true);
   }, []);
-
-  useEffect(() => {
-    loadRows();
-  }, [loadRows]);
 
   return (
     <Grid item sm={12}>

@@ -12,7 +12,7 @@ export const set = (cats: MealCategoriesStateType) => ({
   cats,
 });
 
-const GET_KEY = 'MEAL_CATEGORIES_GET';
+export const GET_KEY = 'MEAL_CATEGORIES_GET';
 export const get: ThunkActionCreator<void> = () => dispatch => {
   dispatch(add(GET_KEY));
   list()

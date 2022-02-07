@@ -5,15 +5,20 @@ import moment, { Moment } from 'moment';
 import { MealCategoryType } from '@health-journal/server';
 import { Reducers } from 'store/types';
 import { MealCategoriesStateType } from 'store/meal-categories/types';
-import { get as getCategories } from 'store/meal-categories/actions';
+import { get as getCategories, GET_KEY } from 'store/meal-categories/actions';
+import useBusy from 'hooks/useBusy';
 
-type useMealCategoriesReturn = [
-  MealCategoriesStateType,
-  (now?: Moment) => null | MealCategoryType
-];
+type useMealCategoriesReturn = {
+  mealCategories: MealCategoriesStateType;
+  categoryByTime: (now?: Moment) => null | MealCategoryType;
+  loading: boolean;
+  load: () => void;
+};
 
 const useMealCategories = (): useMealCategoriesReturn => {
   const dispatch = useDispatch();
+
+  const busy = useBusy();
 
   const mealCategories = useSelector<Reducers, MealCategoriesStateType>(
     o => o.mealCategories
@@ -54,11 +59,15 @@ const useMealCategories = (): useMealCategoriesReturn => {
     [mealCategories]
   );
 
-  useEffect(() => {
+  const load = useCallback(() => {
     dispatch(getCategories());
   }, [dispatch]);
 
-  return [mealCategories, categoryByTime];
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  return { mealCategories, categoryByTime, loading: busy.has(GET_KEY), load };
 };
 
 export default useMealCategories;

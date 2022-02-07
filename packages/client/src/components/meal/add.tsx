@@ -33,7 +33,7 @@ export interface AddProps {
 const Add: FC<AddProps> = ({ open, onClose }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [categories, categoryByTime] = useMealCategories();
+  const { mealCategories, categoryByTime } = useMealCategories();
 
   const [category, setCategory] = useState<null | MealCategoryType>(null);
 
@@ -148,7 +148,7 @@ const Add: FC<AddProps> = ({ open, onClose }) => {
                 <Grid item md={6} sm={12} sx={{ mb: 2 }}>
                   <Autocomplete
                     value={category}
-                    options={categories}
+                    options={mealCategories}
                     getOptionLabel={o => o.title}
                     onChange={(_e, cat) => onChangeCategory(cat)}
                     disabled={loading}
