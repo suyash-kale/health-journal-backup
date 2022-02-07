@@ -5,6 +5,7 @@ import { eActions } from 'store/const';
 import { BusyStateType } from 'store/busy/types';
 import { NotificationStateType } from 'store/notification/types';
 import { UserStateType } from 'store/user/types';
+import { MealCategoriesStateType } from 'store/meal-categories/types';
 
 export type Action = ReduxAction<eActions>;
 
@@ -16,4 +17,5 @@ export interface Reducers {
   busy: BusyStateType;
   notification: NotificationStateType;
   user: UserStateType;
+  mealCategories: MealCategoriesStateType;
 }

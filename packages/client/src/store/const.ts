@@ -8,4 +8,6 @@ export enum eActions {
   // user
   USER_SIGN_IN = 'USER_SIGN_IN',
   USER_SIGN_OUT = 'USER_SIGN_OUT',
+  // meal category
+  MEAL_CATEGORY_SET = 'MEAL_CATEGORY_SET',
 }

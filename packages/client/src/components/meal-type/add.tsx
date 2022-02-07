@@ -13,22 +13,22 @@ import {
   MealCategoryPostRequest,
   MealCategoryPutRequest,
 } from '@health-journal/server';
-import { create as createService } from 'services/meal-category';
+import { add as addService } from 'services/meal-category';
 import useForm from 'hooks/useForm';
 import TimePicker from 'components/common/time-picker';
 import Loading from 'components/common/loading';
 
-export interface CreateProps {
+export interface AddProps {
   row?: MealCategoryPostRequest | MealCategoryPutRequest;
   open: boolean;
   onClose: () => void;
   onDone: () => void;
 }
 
-const Create: FC<CreateProps> = ({ open, row, onClose, onDone }) => {
+const Add: FC<AddProps> = ({ open, row, onClose, onDone }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [form, setValue, errors, validate, setErrors, reset] = useForm<
+  const [form, setValue, errors, validate, setErrors, { reset }] = useForm<
     MealCategoryPostRequest | MealCategoryPutRequest
   >(MealCategoryPostRequest);
 
@@ -40,7 +40,7 @@ const Create: FC<CreateProps> = ({ open, row, onClose, onDone }) => {
       setLoading(true);
       validate()
         .then(() => {
-          createService(form)
+          addService(form)
             .then(() => onDone())
             .catch(err => setErrors(err.response.data.errors))
             .finally(() => setLoading(false));
@@ -61,7 +61,7 @@ const Create: FC<CreateProps> = ({ open, row, onClose, onDone }) => {
     <Dialog open={open} maxWidth='sm' fullWidth>
       <Loading loading={loading}>
         <DialogTitle>
-          {isUpdate ? 'Update' : 'Create'} meal category
+          {isUpdate ? 'Update' : 'Add'} meal category
           <IconButton
             onClick={onClose}
             sx={{
@@ -124,11 +124,11 @@ const Create: FC<CreateProps> = ({ open, row, onClose, onDone }) => {
                 />
               </Grid>
               <Grid item sm={12} textAlign='right'>
-                <Button variant='outlined' sx={{ mr: 2 }} onClick={onClose}>
+                <Button variant='outlined' sx={{ mr: 1 }} onClick={onClose}>
                   Cancel
                 </Button>
                 <Button variant='contained' type='submit' endIcon={<AddIcon />}>
-                  {isUpdate ? 'Update' : 'Create'}
+                  {isUpdate ? 'Update' : 'Add'}
                 </Button>
               </Grid>
             </Grid>
@@ -139,4 +139,4 @@ const Create: FC<CreateProps> = ({ open, row, onClose, onDone }) => {
   );
 };
 
-export default Create;
+export default Add;

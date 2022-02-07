@@ -10,18 +10,18 @@ export type UseFormReturn<T> = [
   ErrorsType<T>,
   (key?: keyof T, f?: T) => Promise<void>,
   (errs: ErrorsType<T>) => void,
-  (o?: T | undefined) => void
+  { reset: (o?: T | undefined) => void; assign: (o: T) => T }
 ];
 
 const useForm = <T>(
   Constructor: { new (): T },
-  DEFAULT_VALUE: Partial<T> = {}
+  state?: [T, React.Dispatch<React.SetStateAction<T>>]
 ): UseFormReturn<T> => {
   const [addNotification] = useNotification();
 
-  const [form, setForm] = useState<T>(
-    Object.assign(new Constructor(), DEFAULT_VALUE)
-  );
+  const defaultState = useState(new Constructor());
+
+  const [form, setForm] = state || defaultState;
 
   const [errors, setErrors] = useState<ErrorsType<T>>({});
 
@@ -55,13 +55,20 @@ const useForm = <T>(
     [form, addNotification]
   );
 
+  const assign = useCallback(
+    (o: T) =>
+      Object.assign(new Constructor(), {
+        ...o,
+      }),
+    [Constructor]
+  );
   // for updating the key's value in the form & will auto validate the key.
   const updateValue = useCallback<
     <K extends keyof T>(key: K, value: T[K]) => void
   >(
     (key, value) => {
       setForm(prev => {
-        const errs = Object.assign(new Constructor(), {
+        const errs = assign({
           ...prev,
           [key]: value,
         });
@@ -70,7 +77,7 @@ const useForm = <T>(
         return errs;
       });
     },
-    [Constructor, validate]
+    [assign, validate, setForm]
   );
 
   // for updating the errors.
@@ -83,10 +90,10 @@ const useForm = <T>(
       setForm(o || new Constructor());
       setErrors({});
     },
-    [Constructor]
+    [Constructor, setForm]
   );
 
-  return [form, updateValue, errors, validate, updateErrors, reset];
+  return [form, updateValue, errors, validate, updateErrors, { reset, assign }];
 };
 
 export default useForm;

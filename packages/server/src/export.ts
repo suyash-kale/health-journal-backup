@@ -5,3 +5,4 @@ export * from './types/entity';
 export * from './types/controller/user/index';
 export * from './types/controller/user/auth';
 export * from './types/controller/meal/category';
+export * from './types/controller/meal/index';

@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import { CurrentUserType, MealCategoryType } from '../types/entity';
 import { RequestEntitiesType } from '../types/common';
 import { MealCategoryTable } from '../types/table';
@@ -85,7 +87,30 @@ export const list = (
       >
     >(
       `SELECT IdMealCategory, title, fromTime, tillTime FROM MealCategory ${where} ORDER BY fromTime ASC`,
-    ).then(([mealCategory]) => resolve(mealCategory), reject);
+    ).then(
+      ([mealCategory]) =>
+        resolve(
+          mealCategory.map((o) => {
+            const now = moment();
+            const fromTime = moment(o.fromTime)
+              .set({
+                date: now.get('date'),
+                month: now.get('month'),
+                year: now.get('year'),
+              })
+              .toDate();
+            const tillTime = moment(o.tillTime)
+              .set({
+                date: now.get('date'),
+                month: now.get('month'),
+                year: now.get('year'),
+              })
+              .toDate();
+            return { ...o, fromTime, tillTime };
+          }),
+        ),
+      reject,
+    );
   });
 
 // Update a 'MealCategory' for a User.

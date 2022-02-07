@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsDateString, IsInt } from 'class-validator';
 
 import { DateType, IdType } from '../../table';
 import { MealType } from '../../entity';
@@ -6,11 +6,12 @@ import { ResponseEntityType } from '../../common';
 
 export class MealPostRequest {
   @IsNotEmpty()
-  IdMealCategory: IdType;
+  @IsInt()
+  IdMealCategory: IdType = null;
 
   @IsNotEmpty()
   @IsDateString()
-  dateTime: DateType;
+  dateTime: DateType = new Date().toISOString();
 }
 
 export type MealPostResponse = ResponseEntityType<MealType>;

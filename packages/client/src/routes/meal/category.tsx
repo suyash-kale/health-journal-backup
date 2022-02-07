@@ -23,7 +23,7 @@ import { localTime } from 'utility/date';
 import Search from 'components/common/search';
 import IconMerge from 'components/common/icon-merge';
 import Loading from 'components/common/loading';
-import Create from 'components/meal-type/create';
+import Add from 'components/meal-type/add';
 import Delete from 'components/meal-type/delete';
 
 const Category: FC = () => {
@@ -90,7 +90,7 @@ const Category: FC = () => {
         Meal category
       </Typography>
 
-      <Create open={open} row={row} onClose={onClose} onDone={onDone} />
+      <Add open={open} row={row} onClose={onClose} onDone={onDone} />
 
       <Delete row={deleteRow} onClose={onClose} onDone={onDone} />
 

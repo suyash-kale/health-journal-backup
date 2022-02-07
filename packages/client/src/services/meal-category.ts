@@ -9,7 +9,7 @@ import {
 } from '@health-journal/server';
 import service from 'services/index';
 
-export const create = (
+export const add = (
   data: MealCategoryPostRequest | MealCategoryPutRequest
 ): Promise<MealCategoryPostResponse | MealCategoryPutResponse> =>
   service({
@@ -19,7 +19,7 @@ export const create = (
   });
 
 export const list = (
-  data: MealCategoryGetRequest
+  data?: MealCategoryGetRequest
 ): Promise<MealCategoryGetResponse> =>
   service({
     url: '/meal/category',
