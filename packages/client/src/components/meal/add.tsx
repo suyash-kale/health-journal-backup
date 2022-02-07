@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState, FormEvent } from 'react';
 import Dialog from '@mui/material/Dialog';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,6 +13,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/lab/LoadingButton';
 import AddIcon from '@mui/icons-material/Add';
 import moment from 'moment';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
 
 import {
   MealCategoryType,
@@ -22,6 +24,7 @@ import {
 import { add as addMealService } from 'services/meal';
 import useForm from 'hooks/useForm';
 import useMealCategories from 'hooks/useMealCategories';
+import Transition from 'utility/transition';
 import Loading from 'components/common/loading';
 import TimePicker from 'components/common/time-picker';
 
@@ -82,14 +85,12 @@ const Add: FC<AddProps> = ({ open, onClose }) => {
 
   // auto selecting category by current time;
   useEffect(() => {
-    onChangeCategory(categoryByTime());
-  }, [categoryByTime, onChangeCategory]);
-
-  useEffect(() => {
     if (open) {
+      // with 'open' making sure the category is updated whenever dialog opens.
       reset();
+      onChangeCategory(categoryByTime());
     }
-  }, [open, reset]);
+  }, [open, categoryByTime, onChangeCategory, reset]);
 
   return (
     <Dialog
@@ -101,6 +102,7 @@ const Add: FC<AddProps> = ({ open, onClose }) => {
           backgroundColor: grey[300],
         },
       }}
+      TransitionComponent={Transition}
     >
       <AppBar sx={{ position: 'relative' }}>
         <Toolbar>
@@ -188,7 +190,7 @@ interface DishProps {
 const Dish: FC<DishProps> = ({ meal, addMeal, ...props }) => {
   const [loading] = useState<boolean>(false);
 
-  const [, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
 
   const onAddDish = useCallback(() => {
     if (meal) {
@@ -209,6 +211,9 @@ const Dish: FC<DishProps> = ({ meal, addMeal, ...props }) => {
       <Typography variant='h4' align='center' sx={{ mt: 3 }}>
         Dish
       </Typography>
+
+      <AddDish open={open} onClose={() => setOpen(false)} />
+
       <Grid container spacing={2} justifyContent='center'>
         <Grid item md={4} sm={12}>
           <Loading loading={loading}>
@@ -249,6 +254,92 @@ const Dish: FC<DishProps> = ({ meal, addMeal, ...props }) => {
         </Grid>
       </Grid>
     </>
+  );
+};
+
+interface AddDishProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+const AddDish: FC<AddDishProps> = ({ open, onClose }) => {
+  const [loading] = useState<boolean>(false);
+
+  const onSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  }, []);
+  return (
+    <Dialog
+      open={open}
+      maxWidth='sm'
+      TransitionComponent={Transition}
+      fullWidth
+    >
+      <Loading loading={loading}>
+        <DialogTitle>
+          Add dish
+          <IconButton
+            onClick={onClose}
+            sx={{
+              position: 'absolute',
+              top: 8,
+              right: 8,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <form onSubmit={onSubmit} noValidate>
+            <Grid container>
+              <Grid item sm={12}>
+                <TextField
+                  // value={form.title}
+                  // onChange={e => setValue('title', e.target.value)}
+                  disabled={loading}
+                  // error={!!errors.title}
+                  // helperText={errors.title}
+                  label='Title'
+                  placeholder='Enter title'
+                  margin='dense'
+                  variant='standard'
+                  autoFocus
+                  fullWidth
+                />
+              </Grid>
+              <Grid item sm={12}>
+                <Autocomplete
+                  // value={category}
+                  options={[]}
+                  // getOptionLabel={o => o.title}
+                  // onChange={(_e, cat) => onChangeCategory(cat)}
+                  disabled={loading}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      margin='dense'
+                      variant='standard'
+                      label='Category'
+                      placeholder='Select category'
+                      disabled={loading}
+                      // error={!!errors.IdMealCategory}
+                      // helperText={errors.IdMealCategory}
+                      sx={{
+                        pl: 1,
+                      }}
+                    />
+                  )}
+                  selectOnFocus
+                  clearOnBlur
+                  handleHomeEndKeys
+                  freeSolo
+                />
+              </Grid>
+            </Grid>
+          </form>
+        </DialogContent>
+      </Loading>
+    </Dialog>
   );
 };
 

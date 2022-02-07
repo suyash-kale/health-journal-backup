@@ -15,6 +15,7 @@ import {
 } from '@health-journal/server';
 import { add as addService } from 'services/meal-category';
 import useForm from 'hooks/useForm';
+import Transition from 'utility/transition';
 import TimePicker from 'components/common/time-picker';
 import Loading from 'components/common/loading';
 
@@ -58,7 +59,12 @@ const Add: FC<AddProps> = ({ open, row, onClose, onDone }) => {
   }, [open, row, reset]);
 
   return (
-    <Dialog open={open} maxWidth='sm' fullWidth>
+    <Dialog
+      open={open}
+      maxWidth='sm'
+      TransitionComponent={Transition}
+      fullWidth
+    >
       <Loading loading={loading}>
         <DialogTitle>
           {isUpdate ? 'Update' : 'Add'} meal category
@@ -69,6 +75,7 @@ const Add: FC<AddProps> = ({ open, row, onClose, onDone }) => {
               top: 8,
               right: 8,
             }}
+            disabled={loading}
           >
             <CloseIcon />
           </IconButton>
@@ -124,10 +131,20 @@ const Add: FC<AddProps> = ({ open, row, onClose, onDone }) => {
                 />
               </Grid>
               <Grid item sm={12} textAlign='right'>
-                <Button variant='outlined' sx={{ mr: 1 }} onClick={onClose}>
+                <Button
+                  variant='outlined'
+                  sx={{ mr: 1 }}
+                  onClick={onClose}
+                  disabled={loading}
+                >
                   Cancel
                 </Button>
-                <Button variant='contained' type='submit' endIcon={<AddIcon />}>
+                <Button
+                  variant='contained'
+                  type='submit'
+                  endIcon={<AddIcon />}
+                  disabled={loading}
+                >
                   {isUpdate ? 'Update' : 'Add'}
                 </Button>
               </Grid>
