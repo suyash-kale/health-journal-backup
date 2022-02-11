@@ -117,10 +117,15 @@ const Category: FC = () => {
             {loading && !rows.length && (
               <ListItem>
                 <CircularProgress size={24} sx={{ mr: 2 }} />
-                Loading ..
+                Loading.
               </ListItem>
             )}
-            {!loading && !rows.length && <ListItem>No data ..</ListItem>}
+            {!loading && !rows.length && (
+              <ListItem>No meal categories.</ListItem>
+            )}
+            {!loading && !rows.length && search && (
+              <ListItem>No search results.</ListItem>
+            )}
             {rows.map((r, i) => (
               <Fragment key={`fragment-${r.IdMealCategory}`}>
                 {!!i && <Divider key={`divider-${r.IdMealCategory}`} />}

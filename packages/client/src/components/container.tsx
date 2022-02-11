@@ -236,7 +236,7 @@ const Container: FC<ContainerProps> = ({
       )}
       <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <MaterialContainer maxWidth={false}>
+        <MaterialContainer>
           <Grid container spacing={2} justifyContent='center'>
             {authorization && user && element}
             {!authorization && element}

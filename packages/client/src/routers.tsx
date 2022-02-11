@@ -12,15 +12,13 @@ const Routers: FC = () => {
     <HashRouter basename='/'>
       <Routes>
         <Route
-          path='/sign-in'
+          path='/meal/category'
           element={
-            <Container title='Sign in' element={<SignIn />} publicOnly />
-          }
-        />
-        <Route
-          path='/sign-up'
-          element={
-            <Container title='Sign up' element={<SignUp />} publicOnly />
+            <Container
+              title='Meal category'
+              element={<MealCategory />}
+              authorization
+            />
           }
         />
         <Route
@@ -30,13 +28,15 @@ const Routers: FC = () => {
           }
         />
         <Route
-          path='/meal/category'
+          path='/sign-in'
           element={
-            <Container
-              title='Meal category'
-              element={<MealCategory />}
-              authorization
-            />
+            <Container title='Sign in' element={<SignIn />} publicOnly />
+          }
+        />
+        <Route
+          path='/sign-up'
+          element={
+            <Container title='Sign up' element={<SignUp />} publicOnly />
           }
         />
         <Route

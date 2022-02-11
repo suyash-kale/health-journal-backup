@@ -62,17 +62,19 @@ export class DishMasterTable {
   IdDishMaster: IdType = null;
   title: string;
   createdAt: DateType = new Date();
+  createdBy: IdType;
 }
 
-export class MealDishIngredient {
+export class MealDishIngredientTable {
   IdMealDishIngredient: IdType = null;
   IdMealDish: IdType;
   IdIngredientMaster: IdType;
   createdAt: DateType = new Date();
 }
 
-export class IngredientMaster {
+export class IngredientMasterTable {
   IdIngredientMaster: IdType = null;
   title: string;
   createdAt: DateType = new Date();
+  createdBy: IdType;
 }

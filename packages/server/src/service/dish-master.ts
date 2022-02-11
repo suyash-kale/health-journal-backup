@@ -1,8 +1,13 @@
+import { CurrentUserType } from '../types/entity';
 import { DishMasterTable } from '../types/table';
 import { pull, push, escape } from '../utility/mysql';
 
-// Create new 'DishMasterTable'.
-export const create = (data: Pick<DishMasterTable, 'title'>): void => {
+// Create new 'DishMaster'.
+export const create = (
+  user: CurrentUserType,
+  data: Pick<DishMasterTable, 'title'>,
+): void => {
+  const { IdUser: createdBy } = user;
   const { title } = data;
   // check if 'title' duplicate.
   pull<Pick<DishMasterTable, 'IdDishMaster'>>(
@@ -15,6 +20,7 @@ export const create = (data: Pick<DishMasterTable, 'title'>): void => {
         {
           ...new DishMasterTable(),
           title,
+          createdBy,
         },
       );
     }

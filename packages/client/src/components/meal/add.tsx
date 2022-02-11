@@ -1,4 +1,5 @@
-import React, { FC, useCallback, useEffect, useState, FormEvent } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import moment from 'moment';
 import Dialog from '@mui/material/Dialog';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,11 +11,6 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import Button from '@mui/lab/LoadingButton';
-import AddIcon from '@mui/icons-material/Add';
-import moment from 'moment';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
 
 import {
   MealCategoryType,
@@ -27,6 +23,7 @@ import useMealCategories from 'hooks/useMealCategories';
 import Transition from 'utility/transition';
 import Loading from 'components/common/loading';
 import TimePicker from 'components/common/time-picker';
+import Dish from 'components/meal/dish';
 
 export interface AddProps {
   open: boolean;
@@ -38,8 +35,6 @@ const Add: FC<AddProps> = ({ open, onClose }) => {
 
   const { mealCategories, categoryByTime } = useMealCategories();
 
-  const [category, setCategory] = useState<null | MealCategoryType>(null);
-
   const [meal, setMeal] = useState<null | MealType>(null);
 
   const [_form, setForm] = useState(new MealPostRequest());
@@ -47,9 +42,15 @@ const Add: FC<AddProps> = ({ open, onClose }) => {
   const [form, updateValue, errors, validate, setErrors, { assign, reset }] =
     useForm<MealPostRequest>(MealPostRequest, [_form, setForm]);
 
+  const category = useMemo(
+    (): null | MealCategoryType =>
+      mealCategories.find(m => m.IdMealCategory === form?.IdMealCategory) ||
+      null,
+    [form, mealCategories]
+  );
+
   const onChangeCategory = useCallback(
     (cat: MealCategoryType | null) => {
-      setCategory(cat);
       setForm(prev =>
         assign({
           ...prev,
@@ -60,7 +61,7 @@ const Add: FC<AddProps> = ({ open, onClose }) => {
     [assign]
   );
 
-  // On change of time auto selecting category;
+  // onchange of time auto selecting category;
   const onPickedTime = useCallback(
     (time: Date) => {
       updateValue('dateTime', time);
@@ -69,24 +70,39 @@ const Add: FC<AddProps> = ({ open, onClose }) => {
     [categoryByTime, onChangeCategory, updateValue]
   );
 
-  const addMeal = useCallback(() => {
-    if (!meal) {
-      setLoading(true);
-      validate()
-        .then(() => {
-          addMealService(form)
-            .finally(() => setLoading(false))
-            .then(({ entity }) => setMeal(entity))
-            .catch(err => setErrors(err.response.data.errors));
-        })
-        .catch(() => setLoading(false));
-    }
-  }, [validate, form, setErrors, meal]);
+  const addMeal = useCallback(
+    (): Promise<MealType> =>
+      new Promise((resolve, reject) => {
+        if (meal) {
+          // meal already added.
+          resolve(meal);
+        } else {
+          // adding a new meal.
+          setLoading(true);
+          validate()
+            .then(() => {
+              addMealService(form)
+                .finally(() => setLoading(false))
+                .then(({ entity }) => {
+                  setMeal(entity);
+                  resolve(entity);
+                })
+                .catch(err => {
+                  setErrors(err.response.data.errors);
+                  reject(err);
+                });
+            })
+            .catch(() => setLoading(false));
+        }
+      }),
+    [validate, form, setErrors, meal]
+  );
 
   // auto selecting category by current time;
   useEffect(() => {
     if (open) {
       // with 'open' making sure the category is updated whenever dialog opens.
+      setMeal(null);
       reset();
       onChangeCategory(categoryByTime());
     }
@@ -159,8 +175,8 @@ const Add: FC<AddProps> = ({ open, onClose }) => {
                         {...params}
                         margin='dense'
                         variant='standard'
-                        label='Category'
-                        placeholder='Select category'
+                        label='Meal category'
+                        placeholder='Select meal category'
                         disabled={loading}
                         error={!!errors.IdMealCategory}
                         helperText={errors.IdMealCategory}
@@ -177,168 +193,6 @@ const Add: FC<AddProps> = ({ open, onClose }) => {
         </Grid>
       </Grid>
       <Dish meal={meal} addMeal={addMeal} loading={loading} />
-    </Dialog>
-  );
-};
-
-interface DishProps {
-  meal: null | MealType;
-  addMeal: () => void;
-  loading: boolean;
-}
-
-const Dish: FC<DishProps> = ({ meal, addMeal, ...props }) => {
-  const [loading] = useState<boolean>(false);
-
-  const [open, setOpen] = useState<boolean>(false);
-
-  const onAddDish = useCallback(() => {
-    if (meal) {
-      setOpen(true);
-    } else {
-      addMeal();
-    }
-  }, [meal, addMeal]);
-
-  useEffect(() => {
-    if (meal) {
-      onAddDish();
-    }
-  }, [meal, onAddDish]);
-
-  return (
-    <>
-      <Typography variant='h4' align='center' sx={{ mt: 3 }}>
-        Dish
-      </Typography>
-
-      <AddDish open={open} onClose={() => setOpen(false)} />
-
-      <Grid container spacing={2} justifyContent='center'>
-        <Grid item md={4} sm={12}>
-          <Loading loading={loading}>
-            <Paper
-              sx={{
-                p: 2,
-                mt: 2,
-              }}
-            >
-              <Grid container>
-                <Grid item sm={12}>
-                  <Grid
-                    container
-                    direction='row'
-                    justifyContent='right'
-                    alignItems='center'
-                    sx={{
-                      mb: 2,
-                    }}
-                  >
-                    <Button
-                      loading={props.loading}
-                      loadingPosition='start'
-                      onClick={onAddDish}
-                      variant='contained'
-                      startIcon={<AddIcon />}
-                      sx={{
-                        ml: 2,
-                      }}
-                    >
-                      Add
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Paper>
-          </Loading>
-        </Grid>
-      </Grid>
-    </>
-  );
-};
-
-interface AddDishProps {
-  open: boolean;
-  onClose: () => void;
-}
-
-const AddDish: FC<AddDishProps> = ({ open, onClose }) => {
-  const [loading] = useState<boolean>(false);
-
-  const onSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  }, []);
-  return (
-    <Dialog
-      open={open}
-      maxWidth='sm'
-      TransitionComponent={Transition}
-      fullWidth
-    >
-      <Loading loading={loading}>
-        <DialogTitle>
-          Add dish
-          <IconButton
-            onClick={onClose}
-            sx={{
-              position: 'absolute',
-              top: 8,
-              right: 8,
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <form onSubmit={onSubmit} noValidate>
-            <Grid container>
-              <Grid item sm={12}>
-                <TextField
-                  // value={form.title}
-                  // onChange={e => setValue('title', e.target.value)}
-                  disabled={loading}
-                  // error={!!errors.title}
-                  // helperText={errors.title}
-                  label='Title'
-                  placeholder='Enter title'
-                  margin='dense'
-                  variant='standard'
-                  autoFocus
-                  fullWidth
-                />
-              </Grid>
-              <Grid item sm={12}>
-                <Autocomplete
-                  // value={category}
-                  options={[]}
-                  // getOptionLabel={o => o.title}
-                  // onChange={(_e, cat) => onChangeCategory(cat)}
-                  disabled={loading}
-                  renderInput={params => (
-                    <TextField
-                      {...params}
-                      margin='dense'
-                      variant='standard'
-                      label='Category'
-                      placeholder='Select category'
-                      disabled={loading}
-                      // error={!!errors.IdMealCategory}
-                      // helperText={errors.IdMealCategory}
-                      sx={{
-                        pl: 1,
-                      }}
-                    />
-                  )}
-                  selectOnFocus
-                  clearOnBlur
-                  handleHomeEndKeys
-                  freeSolo
-                />
-              </Grid>
-            </Grid>
-          </form>
-        </DialogContent>
-      </Loading>
     </Dialog>
   );
 };

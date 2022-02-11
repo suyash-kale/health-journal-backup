@@ -1,8 +1,11 @@
+import moment from 'moment';
+
 import { IdType, UserTable, UserDetailTable } from '../types/table';
-import { UserProfileType } from '../types/entity';
+import { UserProfileType, MealCategoryType } from '../types/entity';
 import { ResponseException } from '../types/http-error';
 import { pull, push, escape } from '../utility/mysql';
 import { compare, hash } from '../utility/bcrypt';
+import { create as createMealCategory } from './meal-category';
 
 // Get 'IdUser' from 'mobile'.
 export const IdByMobile = ({
@@ -58,7 +61,70 @@ export const create = (
                 first,
                 last,
               },
-            ).then(() => resolve(IdUser), reject);
+            ).then(() => {
+              // default added meal categories.
+              const defaultMealCategory: Array<MealCategoryType> = [
+                {
+                  IdMealCategory: null,
+                  title: 'Breakfast',
+                  fromTime: moment()
+                    .set({
+                      hours: 7,
+                      minutes: 0,
+                    })
+                    .toISOString(),
+                  tillTime: moment()
+                    .set({
+                      hours: 11,
+                      minutes: 0,
+                    })
+                    .toISOString(),
+                },
+                {
+                  IdMealCategory: null,
+                  title: 'Lunch',
+                  fromTime: moment()
+                    .set({
+                      hours: 12,
+                      minutes: 0,
+                    })
+                    .toISOString(),
+                  tillTime: moment()
+                    .set({
+                      hours: 16,
+                      minutes: 0,
+                    })
+                    .toISOString(),
+                },
+                {
+                  IdMealCategory: null,
+                  title: 'Dinner',
+                  fromTime: moment()
+                    .set({
+                      hours: 19,
+                      minutes: 0,
+                    })
+                    .toISOString(),
+                  tillTime: moment()
+                    .set({
+                      hours: 22,
+                      minutes: 0,
+                    })
+                    .toISOString(),
+                },
+                {
+                  IdMealCategory: null,
+                  title: 'Snacks',
+                  fromTime: null,
+                  tillTime: null,
+                },
+              ];
+              const pArr: Array<Promise<unknown>> = [];
+              for (const mealCategory of defaultMealCategory) {
+                pArr.push(createMealCategory({ IdUser }, mealCategory));
+              }
+              Promise.all(pArr).finally(() => resolve(IdUser));
+            }, reject);
           }, reject);
         }, reject);
       },
